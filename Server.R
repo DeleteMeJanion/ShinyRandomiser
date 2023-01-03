@@ -30,7 +30,8 @@ server <- function(input, output) {
   discreteBinWidth <- reactive(input$discreteBinWidthBox)
   
   # Generate a number(s) on button click
-  observeEvent(input$generate_btn,
+  observeEvent(priority = 1,
+               input$generate_btn,
                output$rand <- renderText({
                  value <- isolate(distribution())$get_values(isolate(count()))
                  return(prettyNum(value[length(value)], digits = 4))
@@ -85,6 +86,10 @@ server <- function(input, output) {
                    binWidth <- discreteBinWidth()
                  } else {
                    stop("u r a idiot")
+                 }
+                 
+                 if (is.na(binWidth)) {
+                   return()
                  }
                  
                  return(previousValuesHistogram(df, binWidth, min, max, distribution()))

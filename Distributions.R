@@ -32,7 +32,7 @@ generate_ideal_histogram <- function(min, max, binWidth, barHeightFunction) {
   return(df)
 }
 
-generate_ideal_uniform <- function(min, max) {
+generate_ideal_uniform_histogram <- function(min, max) {
   return(
     function(x, binWidth) {
       return(1 / ((max - min) * binWidth))
@@ -40,7 +40,7 @@ generate_ideal_uniform <- function(min, max) {
   )
 }
 
-generate_ideal_normal <- function(mean, stdev) {
+generate_ideal_normal_histogram <- function(mean, stdev) {
   return(
     function(x, binWidth) {
       return(pnorm(x + binWidth, mean = mean, sd = stdev) - pnorm(x, mean = mean, sd = stdev))
@@ -48,10 +48,56 @@ generate_ideal_normal <- function(mean, stdev) {
   )
 }
 
-generate_ideal_poisson <- function(mean) {
+generate_ideal_poisson_histogram <- function(mean) {
   return(
     function(x, binWidth) {
       return(ppois(x + binWidth - 1, lambda = mean) - ppois(x - 1, lambda = mean))
+    }
+  )
+}
+
+##############################
+## Ideal Quartile Functions ##
+##############################
+
+generate_ideal_uniform_quartiles <- function(min, max) {
+  return(
+    function() {
+      range <- max - min
+      return(c(min + range / 4, min + range / 2, max - range / 4))
+    }
+  )
+}
+
+generate_ideal_normal_quartiles <- function(mean, stdev) {
+  return(
+    function() {
+      quartileSpacing <- stdev * 0.67449
+      return(c(mean - quartileSpacing, mean, mean + quartileSpacing))
+    }
+  )
+}
+
+generate_ideal_poisson_quartiles <- function(mean) {
+  return(
+    function() {
+      lowerQ = NULL
+      middleQ = NULL
+      upperQ = NULL
+      
+      total <- 0
+      counter <- 0
+      while (is.null(upperQ)) {
+        probability <- ppois(counter + 1, lambda = mean)
+        if (is.null(lowerQ) && probability > 0.25) {
+          lowerQ <- counter
+        } else if (is.null(middleQ) && probability > 0.5) {
+          middleQ <- counter
+        } else if (is.null(upperQ) && probability > 0.75) {
+          upperQ <- counter
+        }
+      }
+      return(c(lowerQ, middleQ, upperQ))
     }
   )
 }
@@ -66,7 +112,8 @@ Distribution <- setRefClass("Distribution",
                               is_continuous = "logical",
                               previous_values = "vector",
                               generator = "function",
-                              ideal_generator = "function"
+                              ideal_histogram_generator = "function",
+                              ideal_quartiles_generator = "function"
                               ),
                             methods=list(
                               get_values = function(count) {
@@ -78,7 +125,10 @@ Distribution <- setRefClass("Distribution",
                                 return(value)
                               },
                               get_ideal_histogram = function(min, max, binWidth) {
-                                return(generate_ideal_histogram(min, max, binWidth, ideal_generator))
+                                return(generate_ideal_histogram(min, max, binWidth, ideal_histogram_generator))
+                              },
+                              get_ideal_quartiles = function() {
+                                return(ideal_quartiles_generator())
                               }
                               )
                             )
@@ -91,7 +141,8 @@ Uniform <- function(min, max) {
   return(Distribution(name = "Uniform",
                       is_continuous = TRUE,
                       generator = function(count) {generate_uniform(count, min, max)},
-                      ideal_generator = generate_ideal_uniform(min, max)))
+                      ideal_histogram_generator = generate_ideal_uniform_histogram(min, max),
+                      ideal_quartiles_generator = generate_ideal_uniform_quartiles(min, max)))
 }
 
 Normal <- function(mean, stdev) {
@@ -102,7 +153,8 @@ Normal <- function(mean, stdev) {
   return(Distribution(name = "Normal",
                       is_continuous = TRUE,
                       generator = function(count) {generate_normal(count, mean, stdev)},
-                      ideal_generator = generate_ideal_normal(mean, stdev)))
+                      ideal_histogram_generator = generate_ideal_normal_histogram(mean, stdev),
+                      ideal_quartiles_generator = generate_ideal_normal_quartiles(mean, stdev)))
 }
 
 Poisson <- function(mean) {
@@ -113,5 +165,6 @@ Poisson <- function(mean) {
   return(Distribution(name = "Poisson",
                       is_continuous = FALSE,
                       generator = function(count) {generate_poisson(count, mean)},
-                      ideal_generator = generate_ideal_poisson(mean)))
+                      ideal_histogram_generator = generate_ideal_poisson_histogram(mean),
+                      ideal_quartiles_generator = generate_ideal_poisson_quartiles(mean)))
 }
