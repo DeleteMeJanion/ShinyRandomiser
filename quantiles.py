@@ -4,21 +4,21 @@ class Distribution:
     self.samples = samples
   
   def calculate_quantiles(self, quantity):
-    percentile_width = len(self.samples) / quantity
+    quantile_width = len(self.samples) / quantity
     self.samples.sort()
     
-    percentiles = []
+    quantiles = []
     for i in range(1, quantity):
-      percentile_location = i * percentile_width
-      index = int(percentile_location)
-      interpolation = percentile_location % 1
+      quantile_location = i * quantile_width
+      index = int(quantile_location)
+      interpolation = quantile_location % 1
       
       lower = self.samples[index]
       upper = self.samples[index + 1]
       
-      percentiles.append(lower + (upper - lower) * interpolation)
+      quantiles.append(lower + (upper - lower) * interpolation)
       
-    return percentiles
+    return quantiles
 
 # if __name__ == '__main__':
 #   import random

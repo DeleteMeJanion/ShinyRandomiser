@@ -67,7 +67,7 @@ server <- function(input, output) {
                    df <- data.frame(isolate(distribution()$previous_values))
                    colnames(df) <- c("Value")
                  }
-                 
+
                  if (is.null(distribution())) {
                    min <- 0
                    max <- 1
@@ -87,11 +87,11 @@ server <- function(input, output) {
                  } else {
                    stop("u r a idiot")
                  }
-                 
+
                  if (is.na(binWidth)) {
                    return()
                  }
-                 
+
                  return(previousValuesHistogram(df, binWidth, min, max, distribution()))
                })
   )

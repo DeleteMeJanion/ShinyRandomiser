@@ -88,7 +88,7 @@ generate_ideal_poisson_quartiles <- function(mean) {
       total <- 0
       counter <- 0
       while (is.null(upperQ)) {
-        probability <- ppois(counter + 1, lambda = mean)
+        probability <- ppois(counter, lambda = mean)
         if (is.null(lowerQ) && probability > 0.25) {
           lowerQ <- counter
         } else if (is.null(middleQ) && probability > 0.5) {
@@ -96,6 +96,7 @@ generate_ideal_poisson_quartiles <- function(mean) {
         } else if (is.null(upperQ) && probability > 0.75) {
           upperQ <- counter
         }
+        counter <- counter + 1
       }
       return(c(lowerQ, middleQ, upperQ))
     }
