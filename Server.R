@@ -16,7 +16,7 @@ server <- function(input, output) {
     } else if (distribution_selection() == "poisson") {
       return(Poisson(input$pMean))
     } else {
-      stop("u r a idiot")
+      stop(paste("No Distribution called: ", distribution_selection()))
     }
   )
   previouslyContinuous <- TRUE
@@ -87,7 +87,7 @@ server <- function(input, output) {
                    max <- max(input$pMean * 3, 5)
                    binWidth <- discreteBinWidth()
                  } else {
-                   stop("u r a idiot")
+                   stop(paste("Cannot plot histogram for distribution named: ", distribution()$name))
                  }
 
                  if (is.na(binWidth)) {
