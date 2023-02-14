@@ -1,3 +1,6 @@
+library(reticulate)
+py_run_file("distributions/quantiles.py")
+
 # Ideal Distribution Function
 generate_ideal_histogram <- function(min, max, binWidth, barHeightFunction) {
   barPositions <- vector(mode = "numeric")
@@ -30,6 +33,10 @@ Distribution <- setRefClass("Distribution",
                                 }
                                 previous_values <<- append(previous_values, value)
                                 return(value)
+                              },
+                              calculate_quartiles = function() {
+                                d <- py$Distribution(previous_values)
+                                return(d$calculate_quantiles(as.integer(4)))
                               },
                               get_ideal_histogram = function(min, max, binWidth) {
                                 return(generate_ideal_histogram(min, max, binWidth, ideal_histogram_generator))

@@ -1,5 +1,4 @@
 library(ggplot2)
-source("Quantiles.R")
 
 previousValuesHistogram <- function(df, binWidth, min, max, distribution) {
   # Set up basic plot
@@ -49,7 +48,7 @@ previousValuesHistogram <- function(df, binWidth, min, max, distribution) {
       scale_x_continuous(breaks=seq(min, max, binWidth))
     
     # Plot the actual quartiles
-    quartiles <- calculate_quartiles(distribution)
+    quartiles <- distribution$calculate_quartiles()
     for (q in quartiles) {
       plot <- plot +
         geom_vline(
