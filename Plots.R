@@ -9,7 +9,7 @@ previousValuesHistogram <- function(df, binWidth, min, max, distribution) {
     ylab("Probability")
   
   # Plot the ideal histogram for the distribution
-  plot <- ggplot() +
+  plot <- plot +
     geom_bar(
       data = distribution$get_ideal_histogram(min, max, binWidth),
       mapping = aes(x = Value, y = Probability / sum(Probability)),
@@ -27,7 +27,8 @@ previousValuesHistogram <- function(df, binWidth, min, max, distribution) {
     plot <- plot +
       geom_vline(
         xintercept = q,
-        linewidth = 1)
+        linewidth = 1
+        )
   }
   
   if (nrow(df) == 0) {
@@ -54,7 +55,8 @@ previousValuesHistogram <- function(df, binWidth, min, max, distribution) {
         geom_vline(
           xintercept = q,
           color = "#ff000080",
-          size = 1)
+          size = 1
+          )
     }
   }
   return(plot)
