@@ -15,10 +15,7 @@ previousValuesHistogram <- function(df, binWidth, min, max, distribution) {
       stat = "identity",
       just = 0,
       width = binWidth
-    ) +
-    ggtitle("Previous Value Distribution vs Ideal") +
-    xlab("Value") +
-    ylab("Probability")
+    )
 
   # Plot the ideal quartiles
   quartiles <- distribution$get_ideal_quartiles()
