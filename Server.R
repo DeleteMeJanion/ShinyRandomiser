@@ -1,5 +1,7 @@
 library(shiny)
-source("Distributions.R")
+source("distributions/Uniform.R")
+source("distributions/Normal.R")
+source("distributions/Poisson.R")
 source("Plots.R")
 
 server <- function(input, output) {
