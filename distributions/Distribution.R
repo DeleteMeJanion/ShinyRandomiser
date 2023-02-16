@@ -3,17 +3,13 @@ py_run_file("distributions/quantiles.py")
 
 # Ideal Distribution Function
 generate_ideal_histogram <- function(min, max, binWidth, barHeightFunction) {
-  barPositions <- vector(mode = "numeric")
   barHeights <- vector(mode = "numeric")
   
   for (x in 0:(((max - min) / binWidth) - 1)) {
     barPosition <- min + (x * binWidth)
-    barPositions <- append(barPositions, barPosition)
     barHeights <- append(barHeights, barHeightFunction(barPosition, binWidth))
   }
-  df = data.frame(barPositions, barHeights)
-  colnames(df) <- c("Value", "Probability")
-  return(df)
+  return(barHeights)
 }
 
 Distribution <- setRefClass("Distribution",

@@ -9,13 +9,12 @@ generate_uniform <- function(count, min, max) {
 generate_ideal_uniform_histogram <- function(min, max) {
   return(
     function(x, binWidth) {
-      return(1 / ((max - min) * binWidth))
+      return(binWidth / (max - min))
     }
   )
 }
 
 # Ideal Quartile Function
-
 generate_ideal_uniform_quartiles <- function(min, max) {
   return(
     function() {

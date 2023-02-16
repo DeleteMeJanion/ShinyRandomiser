@@ -8,6 +8,7 @@ server <- function(input, output) {
   distribution_selection <- reactive(input$distribution_box)
   count <- reactive(input$count)
   
+  # Create the distribution when the type is selected or a configuration value changes
   distribution <- reactive(
     if (distribution_selection() == "uniform") {
       return(Uniform(input$uMin, input$uMax))
@@ -19,12 +20,13 @@ server <- function(input, output) {
       stop(paste("No Distribution called: ", distribution_selection()))
     }
   )
-  previouslyContinuous <- TRUE
+  
+  # Change which bin width box is shown based on whether the distribution is continuous or not
   output$isContinuous <- reactive({
     if (!is.null(distribution())) {
-      previouslyContinuous <<- distribution()$is_continuous
+      return(distribution()$is_continuous)
     }
-    return(previouslyContinuous)
+    return(FALSE)
   })
   outputOptions(output, "isContinuous", suspendWhenHidden = FALSE)
   
@@ -63,13 +65,6 @@ server <- function(input, output) {
                  distribution()
                },
                output$previousValuesPlot <- renderPlot({
-                 if (is.null(distribution()) || is.null(isolate(distribution()$previous_values))) {
-                   df <- data.frame()
-                 } else {
-                   df <- data.frame(isolate(distribution()$previous_values))
-                   colnames(df) <- c("Value")
-                 }
-
                  if (is.null(distribution())) {
                    min <- 0
                    max <- 1
@@ -94,7 +89,7 @@ server <- function(input, output) {
                    return()
                  }
 
-                 return(previousValuesHistogram(df, binWidth, min, max, distribution()))
+                 return(previousValuesHistogram(distribution(), min, max, binWidth))
                })
   )
 }
