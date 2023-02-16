@@ -10,7 +10,7 @@ distribution_panel <- function() {
     br(),
     actionButton(inputId = "generate_btn", label = "Generate"),
     br(),
-    splitLayout(
+    splitLayout(cellWidths = c("25%", "75%"),
       div(tableOutput(outputId = "previousValuesTable"), style='height:500px; overflow-y: scroll;'),
       plot_panel()
     )

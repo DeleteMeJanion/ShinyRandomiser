@@ -2,7 +2,7 @@ library(shiny)
 source("distributions/Uniform.R")
 source("distributions/Normal.R")
 source("distributions/Poisson.R")
-source("graphics/Plots.R")
+source("plot/Plots.R")
 
 server <- function(input, output) {
   distribution_selection <- reactive(input$distribution_box)
