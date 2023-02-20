@@ -15,7 +15,7 @@ previousValuesHistogram <- function(distribution, min, max, binWidth) {
   plot <- plot +
     geom_bar(
       data = histogram_df,
-      mapping = aes(x=Value, y=Probability, colour=Distribution, fill=Distribution),
+      mapping = aes(x=Value, y=Probability, fill=Distribution),
       stat = "identity",
       just = 0,
       width = binWidth,
@@ -33,12 +33,12 @@ previousValuesHistogram <- function(distribution, min, max, binWidth) {
   # Set the colours
   if (is.null(distribution$previous_values)) {
     plot <- plot +
-      scale_colour_manual(values=c("#bbbbbb")) +
-      scale_fill_manual(values=c("#aaaaaa"))
+      scale_colour_manual(values=c("#444444")) +
+      scale_fill_manual(values=c("#bbbbbb"))
   } else {
     plot <- plot +
-      scale_colour_manual(values=c("#ff8800a0", "#bbbbbb")) +
-      scale_fill_manual(values=c("#ff880080", "#aaaaaa"))
+      scale_colour_manual(values=c("#ff6600", "#444444")) +
+      scale_fill_manual(values=c("#cc6600a0", "#bbbbbb"))
   }
   
   if (nrow(histogram_df) == 0) {

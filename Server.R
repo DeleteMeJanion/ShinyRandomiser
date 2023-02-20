@@ -66,9 +66,7 @@ server <- function(input, output) {
                },
                output$previousValuesPlot <- renderPlot({
                  if (is.null(distribution())) {
-                   min <- 0
-                   max <- 1
-                   binWidth <- 1
+                   return()
                  } else if (distribution()$name == "Uniform") {
                    min <- input$uMin
                    max <- input$uMax
