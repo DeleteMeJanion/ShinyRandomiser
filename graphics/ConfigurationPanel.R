@@ -12,7 +12,6 @@ configuration_panel <- function() {
       )
     ),
     "Parameters:",
-    numericInput(inputId = "count", label = "Generation Count", value = 1, min=1, max=1000),
     conditionalPanel(
       condition = "input.distribution_box == 'uniform'",
       numericInput(inputId = "uMin", label = "Minimum", value = 0),
@@ -26,6 +25,15 @@ configuration_panel <- function() {
     conditionalPanel(
       condition = "input.distribution_box == 'poisson'",
       numericInput(inputId = "pMean", label = "Mean", value = 1, min = 0.1)
+    ),
+    # div(
+    #   div(numericInput(inputId = "count", label = "Generation Count", value = 1, min=1, max=1000), style = "display:inline-block"),
+    #   div(actionButton(inputId = "generate_btn", label = "Generate"), style = "display:inline-block"),
+    #   style = "width:100%"
+    # ),
+    div(
+      div(numericInput(inputId = "count", label = "Generation Count", value = 1, min=1, max=1000)),
+      div(actionButton(inputId = "generate_btn", label = "Generate"))
     )
   )
 }

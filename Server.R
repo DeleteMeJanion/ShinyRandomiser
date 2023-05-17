@@ -36,10 +36,7 @@ server <- function(input, output) {
   # Generate a number(s) on button click
   observeEvent(priority = 1,
                input$generate_btn,
-               output$rand <- renderText({
-                 value <- isolate(distribution())$get_values(isolate(count()))
-                 return(prettyNum(value[length(value)], digits = 4))
-               })
+               isolate(distribution())$get_values(isolate(count()))
   )
   
   # Update table of previous values when the distribution is changed or when values are generated
@@ -48,13 +45,13 @@ server <- function(input, output) {
                  distribution()
                },
                output$previousValuesTable <- renderTable({
-                 prevValues <- prettyNum(isolate(distribution()$previous_values), digits = 4)
+                 prevValues <- prettyNum(rev(isolate(distribution()$previous_values)), digits = 4)
                  if (!is.null(prevValues)) {
                    df <- data.frame(prevValues)
                  } else {
                    df <- data.frame(double())
                  }
-                 colnames(df) <- c("Previous Values")
+                 colnames(df) <- c("Generated Values")
                  return(df)
                })
   )
