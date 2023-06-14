@@ -33,58 +33,64 @@ server <- function(input, output) {
   continuousBinWidth <- reactive(input$continuousBinWidthBox)
   discreteBinWidth <- reactive(input$discreteBinWidthBox)
   
-  # Generate a number(s) on button click
-  observeEvent(priority = 1,
-               input$generate_btn,
-               isolate(distribution())$get_values(isolate(count()))
+  # Reactive value holding the previous values of the distribution
+  # This needs be created thusly because the vector itself cannot be made reactive
+  previous_values <- reactiveVal()
+  
+  # Generate number(s) on button click
+  observeEvent(
+    input$generate_btn,
+    {
+      distribution()$get_values(count())
+      previous_values(distribution()$previous_values)
+    }
   )
+  
+  # Clear previous values on distribution change
+  observe({
+    previous_values(distribution()$previous_values)
+  })
   
   # Update table of previous values when the distribution is changed or when values are generated
-  observeEvent({
-                 input$generate_btn
-                 distribution()
-               },
-               output$previousValuesTable <- renderTable({
-                 prevValues <- prettyNum(rev(isolate(distribution()$previous_values)), digits = 4)
-                 if (!is.null(prevValues)) {
-                   df <- data.frame(prevValues)
-                 } else {
-                   df <- data.frame(double())
-                 }
-                 colnames(df) <- c("Generated Values")
-                 return(df)
-               })
-  )
+  output$previousValuesTable <- renderTable({
+    prevValues <-
+      prettyNum(rev(previous_values()), digits = 4)
+    if (!is.null(prevValues)) {
+      df <- data.frame(prevValues)
+    } else {
+      df <- data.frame(double())
+    }
+    colnames(df) <- c("Generated Values")
+    return(df)
+  })
   
   # Plot the histogram of values when the distribution changes or when the generate button is clicked
-  observeEvent({
-                 input$generate_btn
-                 distribution()
-               },
-               output$previousValuesPlot <- renderPlot({
-                 if (is.null(distribution())) {
-                   return()
-                 } else if (distribution()$name == "Uniform") {
-                   min <- input$uMin
-                   max <- input$uMax
-                   binWidth <- continuousBinWidth()
-                 } else if (distribution()$name == "Normal") {
-                   min <- input$nMean - (3 * input$nStdev)
-                   max <- input$nMean + (3 * input$nStdev)
-                   binWidth <- continuousBinWidth()
-                 } else if (distribution()$name == "Poisson") {
-                   min <- 0
-                   max <- max(input$pMean * 3, 5)
-                   binWidth <- discreteBinWidth()
-                 } else {
-                   stop(paste("Cannot plot histogram for distribution named: ", distribution()$name))
-                 }
-
-                 if (is.na(binWidth)) {
-                   return()
-                 }
-
-                 return(previousValuesHistogram(distribution(), min, max, binWidth))
-               })
-  )
+  output$previousValuesPlot <- renderPlot({
+    if (is.null(distribution())) {
+      return()
+    } else if (distribution()$name == "Uniform") {
+      min <- input$uMin
+      max <- input$uMax
+      binWidth <- continuousBinWidth()
+    } else if (distribution()$name == "Normal") {
+      min <- input$nMean - (3 * input$nStdev)
+      max <- input$nMean + (3 * input$nStdev)
+      binWidth <- continuousBinWidth()
+    } else if (distribution()$name == "Poisson") {
+      min <- 0
+      max <- max(input$pMean * 3, 5)
+      binWidth <- discreteBinWidth()
+    } else {
+      stop(paste(
+        "Cannot plot histogram for distribution named: ",
+        distribution()$name
+      ))
+    }
+    
+    if (is.na(binWidth)) {
+      return()
+    }
+    
+    return(previousValuesHistogram(distribution(), previous_values(), min, max, binWidth))
+  })
 }

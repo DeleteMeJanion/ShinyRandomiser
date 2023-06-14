@@ -1,10 +1,10 @@
-create_histogram_data_frame <- function(distribution, min, max, binWidth) {
+create_histogram_data_frame <- function(distribution, values, min, max, binWidth) {
   bins_vector <- c()
   ideal_vector <- distribution$get_ideal_histogram(min, max, binWidth)
   actual_vector <- c()
   for (i in seq(min, max - binWidth, binWidth)) {
     bins_vector <- append(bins_vector, i)
-    actual_vector <- append(actual_vector, sum(i <= distribution$previous_values & distribution$previous_values < (i + binWidth)) / length(distribution$previous_values))
+    actual_vector <- append(actual_vector, sum(i <= values & values < (i + binWidth)) / length(values))
   }
   
   if (all(is.nan(actual_vector))) {

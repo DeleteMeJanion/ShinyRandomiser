@@ -1,8 +1,8 @@
 library(ggplot2)
 source("plot/PlotData.R")
 
-previousValuesHistogram <- function(distribution, min, max, binWidth) {
-  histogram_df <- create_histogram_data_frame(distribution, min, max, binWidth)
+previousValuesHistogram <- function(distribution, values, min, max, binWidth) {
+  histogram_df <- create_histogram_data_frame(distribution, values, min, max, binWidth)
   quartiles_data_frame <- create_quartile_data_frame(distribution)
   
   # Set up basic plot
@@ -31,7 +31,7 @@ previousValuesHistogram <- function(distribution, min, max, binWidth) {
     )
   
   # Set the colours
-  if (is.null(distribution$previous_values)) {
+  if (is.null(values)) {
     plot <- plot +
       scale_colour_manual(values=c("#444444")) +
       scale_fill_manual(values=c("#bbbbbb"))
