@@ -4,3 +4,5 @@ R Shiny app to generate randoms numbers and plot distributions. Created as a too
 #### TODO:
 - Modularise
 - Add unit tests
+
+This is useless text.
